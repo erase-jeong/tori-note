@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="날짜별 할 일과 일정을 적고, 고양이 모모와 5분씩 시작하는 플래너.">
+<meta name="description" content="날짜별 할 일과 일정을 적고, 고양이 토리와 5분씩 시작하는 플래너.">
 <style>
 :root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 html { -webkit-text-size-adjust: 100%; }
@@ -11,7 +11,7 @@ body { margin: 0; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
 </style>
-<title>모모 플래너</title>
+<title>토리 노트</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
 <style>
@@ -171,7 +171,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
   <aside class="rail">
     <div class="brand">
       <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="16" rx="5.5" ry="4.5"/><circle cx="5" cy="10.5" r="2.3"/><circle cx="9.3" cy="6" r="2.4"/><circle cx="14.7" cy="6" r="2.4"/><circle cx="19" cy="10.5" r="2.3"/></svg>
-      <b>모모</b><span>곁에 있는 플래너</span>
+      <b>토리</b><span>곁에 있는 플래너</span>
     </div>
     <div>
       <div class="month">
@@ -183,11 +183,11 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
     </div>
     <div class="howto">
       <strong>사용하는 방법</strong>
-      날짜를 골라 할 일을 적어요.<br>시간이 정해졌다면 일정으로.<br>▶를 누르면 모모와 5분을 시작해요.
+      날짜를 골라 할 일을 적어요.<br>시간이 정해졌다면 일정으로.<br>▶를 누르면 토리와 5분을 시작해요.
     </div>
     <div class="railfoot">
       <span id="storageNote">기록은 이 브라우저에 저장돼요.</span>
-      <button type="button" class="link" id="petToggle">모모 잠시 숨기기</button>
+      <button type="button" class="link" id="petToggle">토리 잠시 숨기기</button>
     </div>
   </aside>
 
@@ -228,7 +228,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
   </main>
 </div>
 
-<div class="pet" id="pet" role="button" tabindex="0" aria-label="모모. 누르면 할 일 입력으로 이동합니다.">
+<div class="pet" id="pet" role="button" tabindex="0" aria-label="토리. 누르면 할 일 입력으로 이동합니다.">
   <div class="bubble"><b id="petHead"></b><span id="petDetail"></span></div>
   <svg viewBox="50 78 150 118" aria-hidden="true">
     <g transform="translate(0,196) scale(1,-1)">
@@ -256,7 +256,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
 <script>
 (function () {
   "use strict";
-  var LS_KEY = "momo.entries.v1", LS_PET = "momo.pet.v1";
+  var LS_KEY = "tori.entries.v1", LS_OLD = "momo.entries.v1", LS_PET = "tori.pet.v1";
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
   var pad = function (n) { return String(n).padStart(2, "0"); };
@@ -288,7 +288,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
   // ---- storage: this browser by default, the viewer's private account space when available ----
   function loadLocal() {
     var text = null;
-    try { text = localStorage.getItem(LS_KEY); } catch (err) { return; }
+    try { text = localStorage.getItem(LS_KEY) || localStorage.getItem(LS_OLD); } catch (err) { return; }
     if (!text) return;
     try {
       var list = JSON.parse(text);
@@ -357,7 +357,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
       cloud = null; unsubscribe = null; saveLocal(); render();
     });
   }
-  function clearLocal() { try { localStorage.removeItem(LS_KEY); } catch (err) {} }
+  function clearLocal() { try { localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_OLD); } catch (err) {} }
   async function moveLocalToCloud(col) {
     try {
       for (var e of Array.from(migrating.values())) {
@@ -438,7 +438,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
         '<button type="button" class="btn primary" data-act="done">완료했어요</button>' +
         '<button type="button" class="btn" data-act="' + (sec == null ? "again" : "rest") + '">' + (sec == null ? "5분 같이 하기" : "잠깐 쉬기") + "</button></div>";
     } else {
-      html += '<p class="what">작게 시작해도 괜찮아요.</p><p class="muted" style="font-size:12px">할 일 옆 ▶ 버튼을 누르면 모모와 5분을 시작해요.</p>';
+      html += '<p class="what">작게 시작해도 괜찮아요.</p><p class="muted" style="font-size:12px">할 일 옆 ▶ 버튼을 누르면 토리와 5분을 시작해요.</p>';
     }
     $("focus").innerHTML = html;
   }
@@ -472,7 +472,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
       detail = left === 0 ? "눌러서 오늘을 기록해요" : "오늘 할 일 " + left + "개";
     }
     $("petHead").textContent = head; $("petDetail").textContent = detail;
-    document.title = e && sec != null ? mmss(sec) + " · 모모 플래너" : "모모 플래너";
+    document.title = e && sec != null ? mmss(sec) + " · 토리 노트" : "토리 노트";
   }
   function renderError() { $("error").hidden = !storageError; $("error").textContent = storageError || ""; }
   function render() { renderCalendar(); renderFocus(); renderList(); renderPet(); renderError(); }
@@ -578,7 +578,7 @@ h1 { font-family: var(--display); font-weight: 400; font-size: 28px; line-height
   window.addEventListener("resize", function () { if (pet.style.left) placePet(pet.offsetLeft, pet.offsetTop); });
   $("petToggle").addEventListener("click", function () {
     pet.hidden = !pet.hidden;
-    $("petToggle").textContent = pet.hidden ? "모모 다시 보이기" : "모모 잠시 숨기기";
+    $("petToggle").textContent = pet.hidden ? "토리 다시 보이기" : "토리 잠시 숨기기";
   });
 
   // ---- clock ----
